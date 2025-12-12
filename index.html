@@ -1,72 +1,98 @@
+
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <base href="https://cdn.jsdelivr.net/gh/genizy/polytrack@main/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Collection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #87CEEB;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 10px 20px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+        .navbar a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .navbar a:hover {
+            background-color: #555;
+            color: white;
+        }
+        .tab {
+            display: none;
+            padding: 20px;
+        }
+        .tab.active {
+            display: block;
+        }
+        .game-container {
+            text-align: center;
+        }
+        .game-frame {
+            border: 2px solid #000;
+            display: inline-block;
+            margin: 20px auto;
+        }
+        #flappy-bird-title {
+            margin-top: 20px;
+        }
+        .blank-message {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 20px;
+        }
+    </style>
     <script>
-        window.jkdfgnjkndfg = document.querySelector('base').href;
-        fetch("simulation_worker.bundle.js").then(res => res.text()).then(text => {
-            const blob = new Blob([text.replaceAll("replacethisplease", window.jkdfgnjkndfg)], {
-                type: 'application/javascript'
-            });
-            window.simulationworker = URL.createObjectURL(blob);
-        });
-        const ogworker = window.Worker;
-        window.Worker = function (scriptUrl, options) {
-            if (typeof scriptUrl === 'string' && scriptUrl.toLowerCase() === "simulation_worker.bundle.js") {
-                const wrapper = {};
-                const promise = window.simulationWorkerReady.then(() => {
-                    const actualWorker = new ogworker(window.simulationworker, options);
-                    Object.assign(wrapper, actualWorker);
-                    if (typeof wrapper.onmessage === 'function') {
-                        actualWorker.onmessage = wrapper.onmessage;
-                    }
-                    return actualWorker;
-                });
-                return new Proxy(wrapper, {
-                    get(target, prop) {
-                        return (...args) => {
-                            promise.then(realWorker => realWorker[prop](...args));
-                        };
-                    },
-                    set(target, prop, value) {
-                        promise.then(realWorker => {
-                            realWorker[prop] = value;
-                        });
-                        return true;
-                    }
-                });
+        function openTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            const activeTab = document.getElementById(tabName);
+            if (activeTab) {
+                activeTab.classList.add('active');
             }
-            return new ogworker(scriptUrl, options);
-        };
-        window.Worker.prototype = ogworker.prototype;
-        const ogfetch = window.fetch;
-        window.fetch = async function (input, init) {
-            if (typeof input === "string") {
-                input = input.replace("vps.kodub.com:43273", "vpskodub.tmena1565.workers.dev");
-            } else if (input instanceof Request) {
-                const newUrl = input.url.replace("vps.kodub.com:43273", "vpskodub.tmena1565.workers.dev");
-                input = new Request(newUrl, input);
+
+            const links = document.querySelectorAll('.navbar a');
+            links.forEach(link => link.classList.remove('active'));
+
+            const activeLink = document.querySelector(`[onclick="openTab('${tabName}')"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
             }
-            return ogfetch(input, init);
-        };
-        const ogxml = XMLHttpRequest.prototype.open;
-        XMLHttpRequest.prototype.open = function (method, url, ...rest) {
-            if (typeof url === "string") {
-                url = url.replace("vps.kodub.com:43273", "vpskodub.tmena1565.workers.dev");
-            }
-            return ogxml.call(this, method, url, ...rest);
-        };
+        }
     </script>
-    <link rel="manifest" href="manifest.json" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
 </head>
-
 <body>
-    <canvas id="screen"></canvas>
-    <div id="ui"></div>
-    <div id="transition-layer"></div>
-    <script type="module" src="main.bundle.js" defer></script>
-</body>
+    <div class="navbar">
+        <a href="#" onclick="openTab('polly-track')" class="active">Polly Track</a>
+        <a href="#" onclick="openTab('car-game')">Car Game</a>
+    </div>
 
+    <!-- Polly Track Game Tab -->
+    <div id="Polly Track" class="tab active">
+        <div class="game-container">
+            <h1 id="flappy-bird-title">Polly-Track</h1>
+            <iframe src="https://www.kodub.com/apps/polytrack" width="1300" height="700" class="game-frame"></iframe>
+        </div>
+    </div>
+
+    <!-- Car Game Tab -->
+    <div id="car-game" class="tab">
+        <div class="blank-message">Car Game will be implemented here.</div>
+    </div>
+</body>
 </html>
